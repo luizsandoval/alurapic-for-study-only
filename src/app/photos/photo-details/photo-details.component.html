@@ -8,11 +8,26 @@
     <div class="col-lg-4 p-4">
       <small>
         <p class="text-left break-word">{{ photo.description }}</p>
+        <div class="text-left mb-4">
+          <i class="fa fa-comment-o fa-2x mr-2 ml-2"></i>{{ photo.comments }}
+          <i 
+            (click)="remove()" 
+            class="fa fa-trash-o fa-2x pull-right" 
+            photoOwnerOnly 
+            [ownedPhoto]="photo">
+          </i>
+        </div>
         <hr>
       </small>
 
-        <ap-photo-comments [photoId]="photoId"></ap-photo-comments>
+      <ap-photo-comments 
+          [photoId]="photoId" 
+          *ngIf="photo.allowComments; else warning">
+      </ap-photo-comments>
 
+      <ng-template #warning>
+        <p class="font-italic">User has disabled comments for this photo</p>
+      </ng-template>
     </div><!-- col-md-4 -->
   </div><!-- row end -->
 </div>
