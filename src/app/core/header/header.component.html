@@ -1,0 +1,20 @@
+<header class="fixed-top bg-white">
+  <div class="col-md-12 col-xs-12">
+    <nav class="navbar navbar-light">
+      <a class="navbar-brand" [routerLink]="['/']" routerLinkActive="router-link-active" >ALURAPIC</a>
+
+      <div *ngIf="(user$ | async) as user; else login">
+        <i class="fa fa-user-circle mr-1"></i>
+        <a class="ml-1" [routerLink]="['/']" routerLinkActive="router-link-active" >{{user.name}}</a>
+        <a (click)="logout()"> (Logout)</a>
+      </div>
+      
+      <ng-template #login>
+        <span class="navbar-text" [routerLink]="['']">
+             Please, login!
+        </span>
+      </ng-template>
+    
+    </nav>
+  </div>
+</header>

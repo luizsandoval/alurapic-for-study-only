@@ -1,0 +1,8 @@
+a {
+    cursor: pointer;
+}
+
+span{
+    cursor: pointer;
+    outline: none;
+}

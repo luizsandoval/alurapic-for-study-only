@@ -1,0 +1,23 @@
+<p class="text-center text-muted" *ngIf="!photos.length">
+  Sorry, there's no photos.
+</p>
+
+<ol class="list-unstyled">
+  <li *ngFor="let cols of rows" class="row no-gutters">
+    <div *ngFor="let photo of cols" class="col-4" apDarkerOnHover brightness="85%">
+     <a [routerLink]="['/p', photo.id]">
+       <ap-card>
+         <ap-photo 
+             [url]="photo.url" 
+             [description]="photo.description"
+             >
+         </ap-photo>
+         <div class="text-center p-1">
+           <i aria-hidden="true" class="fa fa-heart-o fa-1x mr-2"> {{ photo.likes }}</i>
+           <i aria-hidden="true" class="fa fa-comment-o fa-1x mr-2 ml-2"> {{ photo.comments }}</i>
+         </div>
+       </ap-card>
+     </a>
+    </div>
+  </li>
+</ol>
