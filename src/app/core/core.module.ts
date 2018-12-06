@@ -7,11 +7,14 @@ import { HeaderComponent } from './header/header.component';
 import { RequestInterceptor } from './auth/request.interceptor';
 import { FooterComponent } from './footer/footer.component';
 import { AlertModule } from '../shared/components/alert/alert.module';
+import { LoadingModule } from '../shared/components/loading/loading.module';
+import { MenuModule } from '../shared/components/menu/menu.module';
+import { LoggedOnlyModule } from '../shared/directives/logged-only/logged-only.module';
 
 @NgModule({
   declarations: [HeaderComponent, FooterComponent],
   exports: [HeaderComponent, FooterComponent],
-  imports: [CommonModule, RouterModule, AlertModule],
+  imports: [CommonModule, RouterModule, AlertModule, LoadingModule, MenuModule, LoggedOnlyModule],
   providers: [
     {
       provide: HTTP_INTERCEPTORS,

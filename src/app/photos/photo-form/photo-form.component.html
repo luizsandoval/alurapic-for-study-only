@@ -2,29 +2,18 @@
   <form [formGroup]="photoForm" class="row" (submit)="upload()">
     <div class="col-md-6 text-center">
       <div class="form-group" *ngIf="!preview; else previewImage">
-        <button
-            immediateClick
-            type="button" 
-            (click)="fileInput.click()" 
-            class="btn btn-primary">
+        <button immediateClick type="button" (click)="fileInput.click()" class="btn btn-primary">
           <i class="fa fa-image fa-4x align-middle"></i>
         </button>
-        <input 
-            #fileInput 
-            hidden 
-            formControlName="file" 
-            type="file" accept="image/*" 
-            (change)="handleFile($event.target.files[0])">
-        <ap-vmessage 
-            message="Please a select a photo" 
-            *ngIf="photoForm.get('file').errors?.required">
+        <input #fileInput hidden formControlName="file" type="file" accept="image/*" (change)="handleFile($event.target.files[0])">
+        <ap-vmessage message="Please a select a photo" *ngIf="photoForm.get('file').errors?.required">
         </ap-vmessage>
       </div>
       <ng-template #previewImage>
-          <div class="text-center">
-            <ap-photo [url]="preview" title="Preview">
-            </ap-photo>
-          </div>
+        <div class="text-center">
+          <ap-photo [url]="preview" title="Preview">
+          </ap-photo>
+        </div>
       </ng-template>
     </div>
 
@@ -43,11 +32,19 @@
         </label>
       </div>
 
-      <button [disabled]="photoForm.invalid" type="submit" class="btn btn-primary btn-block">
-        Upload
-      </button>
+      <div *ngIf="!percentDone; else percent">
+        <button [disabled]="photoForm.invalid" type="submit" class="btn btn-primary btn-block">
+          Upload
+        </button>
 
-      <a class="btn btn-secondary btn-block">Cancel</a>
+        <a [routerLink]="['']" routerLinkActive="router-link-active" class="btn btn-secondary btn-block">Cancel</a>
+      </div>
+
+      <ng-template #percent>
+        <div class="text-center display-4">
+          Uploading {{percentDone }} %
+        </div>
+      </ng-template>
     </div>
   </form>
 </div>

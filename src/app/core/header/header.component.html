@@ -1,20 +1,38 @@
 <header class="fixed-top bg-white">
   <div class="col-md-12 col-xs-12">
     <nav class="navbar navbar-light">
-      <a class="navbar-brand" [routerLink]="['/']" routerLinkActive="router-link-active" >ALURAPIC</a>
-
+      <a class="navbar-brand" [routerLink]="['/']" routerLinkActive="router-link-active">
+        <i tabindex="0" (keyup.space)="menu.toggle()"class="fas fa-bars mr-2" (click)="menu.toggle()" style="cursor: pointer;"></i>      
+        ALURAPIC
+      </a>
+     
+      <ap-menu #menu>
+        <ul class="list-unstyled">
+          <li>
+            <a [routerLink]="['p', 'add']" loggedOnly>
+              Upload
+          </a>
+        </li>
+        </ul>
+      </ap-menu>
+     
       <div *ngIf="(user$ | async) as user; else login">
         <i class="fa fa-user-circle mr-1"></i>
-        <a class="ml-1" [routerLink]="['/']" routerLinkActive="router-link-active" >{{user.name}}</a>
+        <a class="ml-1" [routerLink]="['/']" routerLinkActive="router-link-active">{{user.name}}</a>
         <a (click)="logout()"> (Logout)</a>
       </div>
-      
+
       <ng-template #login>
         <span class="navbar-text" [routerLink]="['']">
-             Please, login!
+          Please, login!
         </span>
       </ng-template>
-    
+
     </nav>
+    <div class="fixed-top">
+      <ap-loading></ap-loading>
+      <ap-alert></ap-alert>
+    </div>
   </div>
 </header>
+

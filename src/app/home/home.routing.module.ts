@@ -15,11 +15,17 @@ const ROUTES: Routes = [
     children: [
       {
         path: '',
-        component: SignInComponent
+        component: SignInComponent,
+        data: {
+          title: 'Alurapic | Sign in'
+        }
       },
       {
         path: 'signup',
-        component: SignUpComponent
+        component: SignUpComponent,
+        data: {
+          title: 'Alurapic | Sign up'
+        }
       }
     ]
   }

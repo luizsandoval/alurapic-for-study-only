@@ -23,18 +23,34 @@ const ROUTES: Routes = [
     component: PhotoListComponent,
     resolve: {
       photos: PhotoListResolver
-    }
+    },
+    data:{
+      title: 'Alurapic | Timeline'
+    },
   },
   {
     path: 'p/add',
     component: PhotoFormComponent,
-    canActivate: [AuthGuard]
+    canActivate: [AuthGuard],
+    data: {
+      title: 'Alurapic | Upload photo'
+    }
   },
   {
     path: 'p/:photoId',
-    component: PhotoDetailsComponent
+    component: PhotoDetailsComponent,
+    data: {
+      title: 'Alurapic | Photo details'
+    }
   },
-  { path: '**', component: NotFoundComponent }
+  {
+    path: 'not-found',
+    component: NotFoundComponent,
+    data: {
+      title: '404 | Not found'
+    }
+  },
+  { path: '**', redirectTo: 'not-found' }
 ];
 
 @NgModule({

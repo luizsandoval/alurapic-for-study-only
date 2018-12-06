@@ -1,66 +1,76 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 
-import { Photo } from "./photo";
+import { Photo } from './photo';
 import { PhotoComment } from './photo-comment';
+import { map, catchError } from 'rxjs/operators';
+import { of, throwError } from 'rxjs';
 
-const API = 'http://localhost:3000';
+import { environment } from '../../../environments/environment';
+
+const API = environment.apiUrl;
 
 @Injectable({ providedIn: 'root' })
 export class PhotoService {
+  constructor(private http: HttpClient) {}
 
-    constructor(private http: HttpClient) {}
+  listFromUser(userName: string) {
+    return this.http.get<Photo[]>(API + '/' + userName + '/photos');
+  }
 
-    listFromUser(userName: string) {
-        return this.http
-            .get<Photo[]>(API + '/' + userName + '/photos');       
-    }
- 
-    listFromUserPaginated(userName: string, page: number) {
+  listFromUserPaginated(userName: string, page: number) {
+    const params = new HttpParams().append('page', page.toString());
 
-        const params = new HttpParams()
-        .append('page', page.toString());
+    return this.http.get<Photo[]>(API + '/' + userName + '/photosx', { params });
+  }
 
-        return this.http
-            .get<Photo[]>(API + '/' + userName + '/photos', {params});       
-    }
+  upload(description: string, allowComments: boolean, file: File) {
+    //  Here we create a form data, once that we send a form data instead of a JSON file to the backend
+    const formData = new FormData();
 
-    upload(description: string, allowComments: boolean, file: File){
+    // Now, we use '.append' to pass the values that we want to send to the backend into the form data
+    formData.append('description', description);
 
-        //  Here we create a form data, once that we send a form data instead of a JSON file to the backend
-        const formData = new FormData();
+    // Here we make a conditional question to find out if the comments are allowed or not. Then, we convert the boolean value into a string one
+    formData.append('allowComments', allowComments ? 'true' : 'false');
 
-        // Now, we use '.append' to pass the values that we want to send to the backend into the form data
-        formData.append('description', description);
+    formData.append('imageFile', file);
 
-        // Here we make a conditional question to find out if the comments are allowed or not. Then, we convert the boolean value into a string one
-        formData.append('allowComments', allowComments ? 'true' : 'false');
+    // And finally, we return the observable with the data
+    return this.http.post(`${API}/photos/upload`, formData, {
+      observe: 'events',
+      reportProgress: true
+    });
+  }
 
-        formData.append('imageFile', file);
+  findById(photoId: number) {
+    return this.http.get<Photo>(API + '/photos/' + photoId);
+  }
 
-        // And finally, we return the observable with the data
-        return this.http.post(`${API}/photos/upload`, formData)
-    }
+  getComments(photoId: number) {
+    return this.http.get<PhotoComment[]>(
+      API + '/photos/' + photoId + '/comments'
+    );
+  }
 
-    findById(photoId:number){
+  addComment(photoId: number, commentText: string) {
+    return this.http.post(API + '/photos/' + photoId + '/comments', {
+      commentText
+    });
+  }
 
-        return this.http
-            .get<Photo>(API + '/photos/' + photoId);
-    }
+  removePhoto(photoId: number) {
+    return this.http.delete(API + '/photos/' + photoId);
+  }
 
-    getComments(photoId:number){
-        return this.http
-            .get<PhotoComment[]>(API + '/photos/' + photoId + '/comments');
-    }
-
-    addComment(photoId:number, commentText:string){
-
-        return this.http
-               .post(API + '/photos/' + photoId + '/comments', { commentText });
-
-    }
-
-    removePhoto(photoId:number){
-        return this.http.delete(API + '/photos/' + photoId);
-    }
+  like(photoId: number) {
+    return this.http
+      .post(API + '/photos/' + photoId + '/like', {}, { observe: 'response' })
+      .pipe(map(res => true))
+      .pipe(
+        catchError(err => {
+          return err.status == '304' ? of(false) : throwError(err);
+        })
+      );
+  }
 }

@@ -1,39 +1,58 @@
-import { Injectable } from "@angular/core";
-import { Subject } from "rxjs";
+import { Injectable } from '@angular/core';
+import { Router, NavigationStart } from '@angular/router';
+import { Subject } from 'rxjs';
 
-import { Alert, AlertType } from "./alert";
+import { Alert, AlertType } from './alert';
 
 @Injectable({
-    providedIn: 'root'
+  providedIn: 'root'
 })
+export class AlertService {
+  alertSubject: Subject<Alert> = new Subject<Alert>();
+  keepAfterRouteChange = false;
 
-export class AlertService{
+  constructor(private _router: Router) {
+    this._router.events.subscribe(event => {
+      if (event instanceof NavigationStart) {
+        if (this.keepAfterRouteChange) {
+          this.keepAfterRouteChange = false;
+        } else {
+          this.clear();
+        }
+      }
+    });
+  }
 
-    alertSubject: Subject<Alert>;
+  success(message: string, keepAfterRouteChange: boolean = false) {
+    this.alert(AlertType.SUCCESS, message, keepAfterRouteChange);
+  }
 
-    success(message:string){
-        this.alert(AlertType.SUCCESS, message);
-    }
+  danger(message: string, keepAfterRouteChange: boolean = false) {
+    this.alert(AlertType.DANGER, message, keepAfterRouteChange);
+  }
 
-    danger(message:string){
-        this.alert(AlertType.DANGER, message);
-    }
+  warning(message: string, keepAfterRouteChange: boolean = false) {
+    this.alert(AlertType.WARNING, message, keepAfterRouteChange);
+  }
 
-    warning(message:string){
-        this.alert(AlertType.WARNING, message);
-    }
+  info(message: string, keepAfterRouteChange: boolean = false) {
+    this.alert(AlertType.INFO, message, keepAfterRouteChange);
+  }
 
-    info(message:string){
-        this.alert(AlertType.INFO, message);
-    }
-    
-    private alert(alertType: AlertType, message: string){
+  private alert(
+    alertType: AlertType,
+    message: string,
+    keepAfterRouteChange: boolean
+  ) {
+    this.keepAfterRouteChange = keepAfterRouteChange;
+    this.alertSubject.next(new Alert(alertType, message));
+  }
 
-        this.alertSubject.next(new Alert(alertType, message));
+  getAlert() {
+    return this.alertSubject.asObservable();
+  }
 
-    }
-
-    getAlert(){
-        return this.alertSubject.asObservable();
-    }
+  clear() {
+    this.alertSubject.next(null);
+  }
 }
